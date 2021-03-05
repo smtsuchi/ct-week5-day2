@@ -5,7 +5,18 @@
         <h1 class='header-text'>welcome to kekembas blog!</h1>
     </div>
 
-    <h4>Hello, {{customer_name}}</h4>
-    <h6>Username: {{customer_username}}</h6>
+    {% if current_user.is_authenticated %}
+    
+    <h6>Username: {{current_user.username}}</h6>
+    {% else %}
+    <h6>Hello, please register for our blog <a href='{{ url_for("register")  }}'>here</a></h6>
+    {% endif %}
+
+    {% for p in posts %}
+        <h3>{{ p.title }}</h3>
+        <h6>By: {{ p.author.username }}</h6>
+        <p>{{ p.content }}</p>
+        <hr>
+    {% endfor %}
     
 {% endblock content %}
