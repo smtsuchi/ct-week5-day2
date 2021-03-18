@@ -27,14 +27,26 @@ class User(db.Model, UserMixin):
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200))
+    image = db.Column(db.String(300))
     content = db.Column(db.String(300))
     date_created = db.Column(db.DateTime, nullable = False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-    def __init__(self, title, content, user_id):
+    def __init__(self, title, image, content, user_id):
+        self.id = id,
         self.title = title
+        self.image = image,
         self.content = content
         self.user_id = user_id
     
     def __repr__(self):
         return f'<Post: {self.title}>' #shows info in the post.query.all()
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'image': self.image,
+            'content': self.content,
+            "date_created": self.date_created,
+            'user_id': self.user_id
+        }

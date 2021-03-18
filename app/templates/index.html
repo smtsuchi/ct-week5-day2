@@ -9,7 +9,7 @@
     
     <h6>Username: {{current_user.username}}</h6>
     {% else %}
-    <h6>Hello, please register for our blog <a href='{{ url_for("register")  }}'>here</a></h6>
+    <h6>Hello, please register for our blog <a href='{{ url_for("auth.register")  }}'>here</a></h6>
     {% endif %}
 
     {% for p in posts %}

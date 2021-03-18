@@ -10,6 +10,10 @@
             {{ post.title(class = 'form-control', placeholder='Enter Post Title') }}
         </fieldset>
         <fieldset>
+            {{ post.image.label }}
+            {{ post.image(class = 'form-control', placeholder='Enter Image Url') }}
+        </fieldset>
+        <fieldset>
             {{ post.content.label }}
             {{ post.content(class = 'form-control', placeholder='Enter Content Title') }}
         </fieldset>
