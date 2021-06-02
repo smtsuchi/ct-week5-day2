@@ -10,7 +10,7 @@
             <a class="nav-link" href="{{ url_for('auth.register') }}">Register</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('blog.createPost') }}">Create Post</a>
+            <a class="nav-link" href="{{ url_for('blog.create') }}">Create Post</a>
           </li>
         </ul>
         <ul class='navbar-nav ms-auto'>
@@ -21,7 +21,7 @@
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
               <li><a class="dropdown-item" href="{{ url_for('auth.myInfo') }}">My Info</a></li>
-              <li><a class="dropdown-item" href="{{ url_for('blog.myPosts') }}">My Posts</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('blog.posts') }}">My Posts</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
             </ul>

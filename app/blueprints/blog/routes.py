@@ -1,49 +1,74 @@
 from . import bp as blog
-from flask import request, redirect, url_for,jsonify, render_template
+from flask import request, redirect, url_for,jsonify, render_template, flash
 from app import db
 from flask_login import login_required, current_user
 from .forms import PostForm
 from app.models import Post
+from app.auth import token_auth
 
-@blog.route('/createPost', methods=['GET','POST'])
-@login_required
-def createPost():
-    title = "Kekembas Blog | CREATE POST"
-    post = PostForm()
-    if request.method == 'POST' and post.validate():
-        post_title = post.title.data
-        image = post.image.data
-        content = post.content.data
-        user_id = 1
-        # print(post_title, content)
-        # create new post instance
-        new_post = Post(post_title, image, content, user_id)
-        # add new post instance to database
-        db.session.add(new_post)
-        # commit
-        db.session.commit()
-        # flash a message
-        flash("You have successfully created a post!", 'success')
-        # redirect back to create post
-        return redirect(url_for('createPost'))
-    return render_template('create_post.html', title = title, post = post)
 
-@blog.route('/myposts')
+# @blog.route('/createPost', methods=['GET','POST'])
 # @login_required
-def myPosts():
-    title = "Kekembas Blog | MY POSTS"
-    # posts = current_user.post
+# def createPost():
+#     title = "Kekembas Blog | CREATE POST"
+#     post = PostForm()
+#     if request.method == 'POST' and post.validate():
+#         post_title = post.title.data
+#         image = post.image.data
+#         content = post.content.data
+#         user_id = 1
+#         # print(post_title, content)
+#         # create new post instance
+#         new_post = Post(post_title, image, content, user_id)
+#         # add new post instance to database
+#         db.session.add(new_post)
+#         # commit
+#         db.session.commit()
+#         # flash a message
+#         flash("You have successfully created a post!", 'success')
+#         # redirect back to create post
+#         return redirect(url_for('blog.createPost'))
+#     return render_template('create_post.html', title = title, post = post)
+
+@blog.route('/posts', methods=['GET'])
+@token_auth.login_required
+def posts():
     posts = Post.query.all()
-    return jsonify([p.to_dict() for p in posts]) #able to now make an API call to this url
-    # return render_template('my_posts.html', title = title, posts = posts)
-
-@blog.route('/myposts/<int:post_id>')
-# @login_required
-def post_detail(post_id):
-    post = Post.query.get_or_404(post_id)
-    title = f"Kekembas Blog | {post.title.upper()}"
+    return jsonify([p.to_dict() for p in posts])
+    
+@blog.route('/posts/<int:id>', methods=['GET'])
+@token_auth.login_required
+def post(id):
+    post = Post.query.get_or_404(id)
     return jsonify(post.to_dict())
-    # return render_template('post_detail.html', post = post, title = title)
+
+@blog.route('/create', methods=['POST'])
+@token_auth.login_required
+def create():
+    data = request.json
+    user = token_auth.current_user()
+    p = Post(data['title'], data['image'], data['content'], user.id)
+    db.session.add(p)
+    db.session.commit()
+    return jsonify(p.to_dict())
+
+
+# @blog.route('/myposts')
+# # @login_required
+# def myPosts():
+#     title = "Kekembas Blog | MY POSTS"
+#     # posts = current_user.post
+#     posts = Post.query.all()
+#     return jsonify([p.to_dict() for p in posts]) #able to now make an API call to this url
+#     # return render_template('my_posts.html', title = title, posts = posts)
+
+# @blog.route('/myposts/<int:post_id>')
+# # @login_required
+# def post_detail(post_id):
+#     post = Post.query.get_or_404(post_id)
+#     title = f"Kekembas Blog | {post.title.upper()}"
+#     return jsonify(post.to_dict())
+#     # return render_template('post_detail.html', post = post, title = title)
 
 @blog.route('/myposts/update/<int:post_id>', methods =['GET','POST'])
 # @login_required
